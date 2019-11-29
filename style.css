@@ -58,9 +58,12 @@ tbody.text-content th input {
   padding-right: 0 !important;
 }
 
-tbody.text-content th input.hour,
-tbody.text-content th input.millisecond {
+tbody.text-content th input.hour {
   width: 2.7rem !important;
+}
+
+tbody.text-content th input.millisecond {
+  width: 3rem !important;
 }
 
 tbody.text-content td textarea {
@@ -138,4 +141,9 @@ h1 {
 
 .finish-time {
   text-align: center;
+}
+
+.content img {
+  width: 49%;
+  height: auto;
 }
