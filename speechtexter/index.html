@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>SpeechTexter </title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="apple-mobile-web-app-title" content="SpeechTexter">
+	<meta name="application-name" content="SpeechTexter">
+	<meta name="theme-color" content="#ffffff">
+	
+	<link rel="stylesheet" href="style11.css">
+	
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	
+	<!-- Google fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300" rel="stylesheet">
+	
+	<!--    jQuery library    -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+	
+	<!--    scrolling     -->
+	<link rel="stylesheet" href="src/animate.min.css">
+	<script src="src/viewportchecker.js"></script>
+	
+	<!--   ===  lang select   ===  -->
+	<script src="src/jquery-customselect.js"></script>
+	<link href="src/jquery-customselect.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+<div id="intro">
+	<div id="intro-box">
+		<p id="text-intro-a">TYPE WITH<br>YOUR<br>VOICE!</p>
+		<div id="intro-button" onclick="javascript:slideIntro();">START DICTATING</div>
+		
+		<!-- g_c END -->
+	</div>
+	<!-- intro-box END -->
+</div>
+<!-- intro END-->
+
+<div id="header">
+	<div id="navbar">
+		<div id="logo"><img src="img/logo.png" alt="SpeechTexter">
+		</div>
+		
+		<div id="preview-box" class="hidden">
+			<div id="status" title="Result confidence: &#10;> 90% - green &#10;70%-90% - orange &#10;<70% - red">
+				<i id="spinner" class="fa fa-spinner fa-spin fa-inverse fa-fw fa-2x"></i>
+				<div id="score">..</div>
+			</div>
+			<span id="preview-text">...</span>
+		
+		</div>
+	
+	</div>
+	<!-- END navbar -->
+	
+	<div id="menu-control">
+		
+		<div id="navigation">
+			<a class="btn-menu nav page-scroll" href='#main'><i class="fa fa-home" aria-hidden="true"></i></a>
+			<a class="btn-menu nav page-scroll" href='#about'>About <i class="fa fa-angle-down" aria-hidden="true"></i></a>
+			<a class="btn-menu nav page-scroll" href='#info'>Help
+				<i class="fa fa-angle-down" aria-hidden="true"></i></a>
+		</div>
+		<!-- navigation end -->
+		
+		<div id="menu-buttons">
+			
+			<button id="btn-start" class="btn-menu" onmousedown="event.preventDefault();" onclick="javascript:startlisten();slideIntro();return false;" title="start / stop &#10;'ESC' key">
+				► START
+			</button>
+			<button class="btn-menu" onmousedown="event.preventDefault();" onclick="javascript:clearpage();return false;" title="clear the page">
+				<i class="fa fa-trash" aria-hidden="true"></i> Clear
+			</button>
+			
+			<button class="btn-menu" onmousedown="event.preventDefault();" onclick="copyAll();" title="copy all text">
+				<i class="fa fa-clipboard" aria-hidden="true"></i></button>
+			
+			<button class="btn-menu" onmousedown="event.preventDefault();" onclick="execCMD('undo');" title="undo &#10;CTRL + Z">
+				<i class="fa fa-undo" aria-hidden="true"></i></button>
+			<button class="btn-menu" onmousedown="event.preventDefault();" onclick="execCMD('redo');" title="redo &#10;CTRL + Y">
+				<i class="fa fa-repeat" aria-hidden="true"></i></button>
+			
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('bold');" title="bold &#10;CTRL + B">
+				<i class="fa fa-bold" aria-hidden="true"></i></button>
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('italic');" title="italic &#10;CTRL + I">
+				<i class="fa fa-italic" aria-hidden="true"></i></button>
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('underline');" title="underline &#10;CTRL + U">
+				<i class="fa fa-underline" aria-hidden="true"></i></button>
+			<!--    justify  -->
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('justifyLeft');" title="justify left">
+				<i class="fa fa-align-left" aria-hidden="true"></i></button>
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('justifyCenter');" title="justify center">
+				<i class="fa fa-align-center" aria-hidden="true"></i></button>
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('justifyRight');" title="justify right">
+				<i class="fa fa-align-right" aria-hidden="true"></i></button>
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('justifyFull');" title="justify full">
+				<i class="fa fa-align-justify" aria-hidden="true"></i></button>
+			
+			<div class="dropdown nomob">
+				<!-- Font type-->
+				<button class="btn-menu btn-nomob" onmousedown="event.preventDefault();" title="Font type">
+					<i class="fa fa-font" aria-hidden="true"></i></button>
+				<div class="dropdown-content">
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontName', 'Arial');" style="font-family: Arial, Helvetica, sans-serif">Arial</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontName', 'Comic Sans MS');" style="font-family: 'Comic Sans MS', cursive, sans-serif">Comic
+						Sans MS</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontName', 'Courier');" style="font-family: 'Courier New', Courier, monospace">Courier</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontName', 'Georgia');" style="font-family: Georgia, serif">Georgia</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontName', 'Tahoma');" style="font-family: Tahoma, Geneva, sans-serif">Tahoma</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontName', 'Times New Roman');" style="font-family: 'Times New Roman', Times, serif">Times
+						New Roman</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontName', 'Verdana');" style="font-family: Verdana, Geneva, sans-serif">Verdana</a>
+				</div>
+			</div>
+			
+			<div class="dropdown nomob">
+				<!-- Font size-->
+				<button class="btn-menu" onmousedown="event.preventDefault();" title="Font size">
+					<i class="fa fa-text-height" aria-hidden="true"></i></button>
+				<div class="dropdown-content">
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontSize', 1);" style="font-size: 62.5%">x-small</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontSize', 2);" style="font-size: 80%">small</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontSize', 4);" style="font-size: 100%">medium</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontSize', 5);" style="font-size: 112.5%">large</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontSize', 6);" style="font-size: 150%">x-large</a>
+					<a href="" onclick="event.preventDefault();execCMD_extra('fontSize', 7);" style="font-size: 200%">xx-large</a>
+				</div>
+			</div>
+			
+			<div class="dropdown nomob">
+				<!-- Font color-->
+				<button class="btn-menu" onmousedown="event.preventDefault();" title="Font color">
+					<i class="fa fa-paint-brush" aria-hidden="true"></i></button>
+				<div class="dropdown-color">
+					<ul id="color-picker"></ul>
+				</div>
+			</div>
+			
+			<button id="btn-darkmode" class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="darkmode();" title="Dark mode">
+				<i class="fa fa-moon-o" aria-hidden="true"></i></button>
+			
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('insertUnorderedList');" title="bullet list">
+				<i class="fa fa-list-ul" aria-hidden="true"></i></button>
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="execCMD('insertOrderedList');" title="numbered list">
+				<i class="fa fa-list-ol" aria-hidden="true"></i></button>
+			
+			<button class="btn-menu nomob" id="btn-ltr" onmousedown="event.preventDefault();" onclick="textDirection('dir_LTR');" title="Left-To-Right text">
+				<i class="fa fa-caret-right" aria-hidden="true"></i><i class="fa fa-paragraph" aria-hidden="true"></i>
+			</button>
+			<button class="btn-menu nomob" id="btn-rtl" onmousedown="event.preventDefault();" onclick="textDirection('dir_RTL');" title="Right-To-Left text &#10;(Arabic, Hebrew, Persian, and Urdu)">
+				<i class="fa fa-paragraph" aria-hidden="true"></i><i class="fa fa-caret-left" aria-hidden="true"></i>
+			</button>
+			
+			<button class="btn-menu nomob" onmousedown="event.preventDefault();" onclick="printSpeech();" title="print">
+				<i class="fa fa-print" aria-hidden="true"></i></button>
+			
+			<div class="dropdown nomob">
+				<!-- file save-->
+				<button class="btn-menu" onmousedown="event.preventDefault();" onclick="saveSpeechTXT();" title="download to your device">
+					<i class="fa fa-download" aria-hidden="true"></i></button>
+				<div class="dropdown-content">
+					<a onclick="saveSpeechTXT();" title="download .txt file (all formatting will be lost)"><i class="fa fa-file-text-o" aria-hidden="true"></i>
+						.txt file</a>
+					<a onclick="Export2Doc();" title="download a Word document"><i class="fa fa-file-word-o" aria-hidden="true"></i>
+						.doc file</a>
+				</div>
+			</div>
+		</div>
+		<!-- END menu-buttons -->
+		
+		<div style="float: right">
+			<!-- language div -->
+			<select id='lang' name='lang' class='custom-select' onchange="updateLang(this)">
+				<option value="af-za">Afrikaans South Africa</option>
+				<option value="am-ET">አማርኛ Ethiopia</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="ar-DZ">العربية Algeria</option>
+				<option value="ar-BH">العربية Bahrain</option>
+				<option value="ar-EG">العربية Egypt</option>
+				<option value="ar-IQ">العربية Iraq</option>
+				<option value="ar-IL">العربية Israel</option>
+				<option value="ar-JO">العربية Jordan</option>
+				<option value="ar-KW">العربية Kuwait</option>
+				<option value="ar-LB">العربية Lebanon</option>
+				<option value="ar-LY">العربية Lybia</option>
+				<option value="ar-MA">العربية Morocco</option>
+				<option value="ar-OM">العربية Oman</option>
+				<option value="ar-PS">العربية Palestine</option>
+				<option value="ar-QA">العربية Qatar</option>
+				<option value="ar-SA">العربية Saudi Arabia</option>
+				<option value="ar-TN">العربية Tunisia</option>
+				<option value="ar-AE">العربية UAE</option>
+				<option value="ar-YE">العربية Yemen</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="hy-AM">Հայ Armenia</option>
+				<option value="az-AZ">Azərbaycan Azerbaijan</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="bn-BD">বাংলা Bangladesh</option>
+				<option value="bn-IN">বাংলা India</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="id-id">Bahasa Indonesia</option>
+				<option value="ms-my">Bahasa Malaysia</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="bg-bg">Български Bulgaria</option>
+				<option value="ca-es">Català Spain</option>
+				<option value="cs-cz">Čeština Czech Republic</option>
+				<option value="da-DK">Dansk Denmark</option>
+				<option value="de-de">Deutsch Germany</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="en-au">English Australia</option>
+				<option value="en-ca">English Canada</option>
+				<option value="en-GH">English Ghana</option>
+				<option value="en-in">English India</option>
+				<option value="en-IE">English Ireland</option>
+				<option value="en-KE">English Kenya</option>
+				<option value="en-NG">English Nigeria</option>
+				<option value="en-nz">English New Zealand</option>
+				<option value="en-PH">English Philippines</option>
+				<option value="en-za">English South Africa</option>
+				<option value="en-TZ">English Tanzania</option>
+				<option value="en-gb">English United Kingdom</option>
+				<option value="en-us">English United States</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="es-ar">Español Argentina</option>
+				<option value="es-bo">Español Bolivia</option>
+				<option value="es-cl">Español Chile</option>
+				<option value="es-co">Español Colombia</option>
+				<option value="es-cr">Español Costa Rica</option>
+				<option value="es-ec">Español Ecuador</option>
+				<option value="es-sv">Español El Salvador</option>
+				<option value="es-es">Español Spain</option>
+				<option value="es-us">Español United States</option>
+				<option value="es-gt">Español Guatemala</option>
+				<option value="es-hn">Español Honduras</option>
+				<option value="es-mx">Español Mexico</option>
+				<option value="es-ni">Español Nicaragua</option>
+				<option value="es-pa">Español Panama</option>
+				<option value="es-py">Español Paraguay</option>
+				<option value="es-pe">Español Peru</option>
+				<option value="es-pr">Español Puerto Rico</option>
+				<option value="es-do">Español Dominican Rep.</option>
+				<option value="es-uy">Español Uruguay</option>
+				<option value="es-ve">Español Venezuela</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="el-gr">Ελληνική Greece</option>
+				<option value="eu-es">Euskara Spain</option>
+				<option value="fa-ir">فارسی Iran</option>
+				<option value="fil-PH">Filipino Philippines</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="fr-CA">Français Canada</option>
+				<option value="fr-fr">Français France</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="gl-es">Galego Spain</option>
+				<option value="ka-GE">ქართული Georgia</option>
+				<option value="gu-IN">ગુજરાતી India</option>
+				<option value="hi-in">Hindi India</option>
+				<option value="hr_HR">Hrvatski Croatia</option>
+				<option value="he-il">עברית Israel</option>
+				<option value="zu-za">IsiZulu South Africa</option>
+				<option value="is-is">Íslenska Iceland</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="it-it">Italiano Italia</option>
+				<option value="it-ch">Italiano Svizzera</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				
+				<option value="jv-ID">Jawa Indonesia</option>
+				<option value="kn-IN">ಕನ್ನಡ India</option>
+				<option value="km-KH">ភាសាខ្មែរ Cambodia</option>
+				<option value="lo-LA">ລາວ Laos</option>
+				<option value="lv-LV">Latviešu Latvia</option>
+				<option value="lt-LT">Lietuvių Lithuania</option>
+				<option value="la">Lingua latīna</option>
+				<option value="hu-hu">Magyar Hungary</option>
+				<option value="ml-IN">മലയാളം India</option>
+				<option value="mr-IN">मराठी India</option>
+				<option value="nl-nl">Nederlands Netherlands</option>
+				<option value="ne-NP">नेपाली Nepal</option>
+				<option value="nb-NO">Norsk bokmål Norway</option>
+				<option value="pl-pl">Polski Poland</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="pt-br">Português Brasil</option>
+				<option value="pt-pt">Português Portugal</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="ro-ro">Română Romania</option>
+				<option value="si-LK">සිංහල Srilanka</option>
+				<option value="ru-ru">Pусский Russia</option>
+				<option value="sr-rs">Српски Serbia</option>
+				<option value="sk-sk">Slovenčina Slovakia</option>
+				<option value="sl-SI">Slovenščina Slovenia</option>
+				<option value="su-ID">Urang Indonesia</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="sw-TZ">Swahili Tanzania</option>
+				<option value="sw-KE">Swahili Kenya</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="fi-fi">Suomi Finland</option>
+				<option value="sv-se">Svenska Sweden</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="ta-IN">தமிழ் India</option>
+				<option value="ta-SG">தமிழ் Singapore</option>
+				<option value="ta-LK">தமிழ் Sri Lanka</option>
+				<option value="ta-MY">தமிழ் Malaysia</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="te-IN">తెలుగు India</option>
+				<option value="vi-VN">Tiếng Việt Vietnam</option>
+				<option value="tr-tr">Türkçe Turkey</option>
+				<option value="uk">Українська Ukraine</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="ur-PK">اردو Pakistan</option>
+				<option value="ur-IN">اردو India</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="th-th">ไทย Thailand</option>
+				<option value="ko-kr">한국어 (대한민국) South Korea</option>
+				<option value="ja-jp">日本語（日本） Japan</option>
+				
+				<option data-divider="true">&nbsp;</option>
+				<option value="cmn-hans-cn">普通话 (中国大陆) Simplified, China</option>
+				<option value="cmn-hans-hk">普通话 (香港) Simplified, Hong Kong</option>
+				<option value="cmn-hant-tw">中文 (台灣) Traditional, Taiwan</option>
+				<option value="yue-hant-hk">粵語 (香港) Traditional, Hong Kong</option>
+			
+			</select>
+			
+			<script>
+				$( function () {
+					$( "#lang" ).customselect();
+				} );
+			</script>
+		
+		</div>
+		<!-- language div end-->
+	</div>
+	<!-- END menu-control -->
+</div>
+<!-- END header -->
+
+<div id="main">
+	<div id="lside">
+	
+	</div>
+	
+	<div id="ed_wrap">
+		<!-- editor -->
+		<div id="editor" contenteditable="true" class="printable"><p class="p_edit dir_LTR"></p></div>
+		<!-- do not split this line-->
+		<!-- editor END  -->
+		
+		<div id="word_counter">Words: <span id="counter">0</span>
+		</div>
+	</div>
+	
+	<div id="rside">
+		
+		<div id="autosave_box" title="Prevents data loss, when the browser gets accidentally closed. &#10;Won't work if the cache gets cleared.  &#10;Please use the 'download↓' button to save your work to your device">
+			Text autosave <label class="switch">
+			<input id="check_autosave" type="checkbox" onClick="autosave_onchange()">
+			<span class="slider round"></span>
+		</label>
+		
+		</div>
+		<!-- autosave_box END -->
+		
+		<div id="dictionary">
+			
+			<div id='dictionary-button' onclick="javascript:toggleComRep();">Dictionary is ON
+				<i class="fa fa-commenting-o" aria-hidden="true"></i>
+			</div>
+			<div id="dictionary-default-button" onclick="javascript:diDefault();">
+				<span style="display:inline-block;padding:5px;">Default</span>
+			</div>
+			<div id="dictionary-custom-button" onclick="javascript:diCustom();">
+				<span style="display:inline-block;padding:5px;" title="Add your custom words to the dictionary. All data will be lost when you clear the browser's cache">Custom</span>
+			</div>
+			<div id='commands'>
+				<div id='words'></div>
+				<div id='diControl'>
+					<div class="diControl-button" onclick="javascript:addWord();">+</div>
+				</div>
+			</div>
+		
+		</div>
+		<!-- END dictionary -->
+	</div>
+	<!-- END rside-->
+
+</div>
+<!-- END  Main -->
+
+<div id="app-section">
+	<a rel="nofollow" target="_blank" href="https://play.google.com/store/apps/details?id=com.speechtexter.speechtexter">
+		<div class="app-box">
+			<p class="app-description">SpeechTexter for Android (4.4 KitKat and above)</p>
+			<p><img class="app-image lazy" src="" data-src="img/app-android.png" alt="android app">
+			</p>
+		</div>
+	</a>
+	
+	<div class="app-box">
+		<p class="app-description">SpeechTexter for Chrome browser (for desktop only)<br> To try it, open this page
+			using the Chrome browser for desktop</p>
+		<p><img class="app-image lazy" data-src="img/app-chrome.png" alt="web app for chrome browser">
+		</p>
+	</div>
+</div>
+<!-- app-section end -->
+
+
+<!-- about end -->
+
+<div id="info">
+	
+	<div id="help">
+		
+		<!-- Help end -->
+		
+		<script>
+			// dictionary open/close
+			$( "#dictionary-button" ).click( function () {
+				$( "#commands" ).slideToggle( "slow", function () {
+					// Animation complete.
+				} );
+			} );
+			
+			// Color picker
+			var colors = ['White', 'Silver', 'Gray', 'Black', 'Red', 'Maroon', 'Yellow', 'Olive', 'Lime', 'Green', 'Aqua', 'Teal', 'Blue', 'Navy', 'Fuchsia', 'Purple'];
+			var allcolors = colors.length;
+			var colorpicker = "";
+			
+			for ( i = 0; i < allcolors; i++ ) {
+				colorpicker += '<li style="background-color: ' + colors[i] + ';" onmousedown="event.preventDefault();execCMDcolor(\'' + colors[i] + '\');"></li>';
+			}
+			document.getElementById( 'color-picker' ).innerHTML = colorpicker;
+		</script>
+		
+		<script>
+			if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent ) ) {
+				document.getElementById( "menu-control" ).style.display = "none";
+				document.getElementById( "intro-button" ).style.display = "none";
+				document.getElementById( "app-section" ).style.display = "flex";
+				
+			}
+		</script>
+		
+		<script src="speech11.js"></script>
+		<script src="src/FileSaver.js"></script>
+	
+	</div><!-- info end-->
+	
+	<script>
+		//jQuery for page scrolling feature - requires jQuery Easing plugin
+		$( function () {
+			$( document ).on( 'click', 'a.page-scroll', function ( event ) {
+				var $anchor = $( this );
+				$( 'html, body' ).stop().animate( {
+					scrollTop: $( $anchor.attr( 'href' ) ).offset().top
+				}, 1500, 'easeInOutExpo' );
+				event.preventDefault();
+			} );
+		} );
+		
+		// smooth scrolling to bootom - requires jQuery Easing plugin // for onclick form message
+		function scrollTobottom() {
+			var $anchor = $( this );
+			$( 'html, body' ).stop().animate( {
+				scrollTop: $( '#footer-b' ).offset().top
+			}, 1500, 'easeInOutExpo' );
+			
+		}
+		
+		function validateEmail( email ) {
+			var re = /\S+@\S+/;
+			return re.test( String( email ).toLowerCase() );
+		}
+		
+		var mes_prev;
+	
+	</script>
+	
+	<!-- Scrolling Nav JavaScript -->
+	<script src="src/jquery.easing.1.3.js"></script>
+
+</body>
+</html>
